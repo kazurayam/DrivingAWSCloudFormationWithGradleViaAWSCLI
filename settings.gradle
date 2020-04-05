@@ -1,0 +1,3 @@
+include 'subProjectA', 'subProjectB', 'subProjectC'
+
+rootProject.name = 'DrivingAWSCloudFormationWithGradleViaAWSCLI'
