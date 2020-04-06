@@ -1,0 +1,78 @@
+import com.amazonaws.auth.policy.Policy
+import com.amazonaws.auth.policy.Principal
+import com.amazonaws.auth.policy.Statement
+import com.amazonaws.auth.policy.actions.S3Actions
+import com.amazonaws.auth.policy.resources.S3BucketResource
+import com.amazonaws.auth.policy.resources.S3ObjectResource
+
+import jp.classmethod.aws.gradle.s3.CreateBucketTask
+import jp.classmethod.aws.gradle.s3.BucketPolicyTask
+import jp.classmethod.aws.gradle.s3.DeleteBucketTask
+import com.amazonaws.auth.policy.Policy
+import com.amazonaws.auth.policy.Principal
+import com.amazonaws.auth.policy.Statement
+import com.amazonaws.auth.policy.actions.S3Actions
+import com.amazonaws.auth.policy.resources.S3BucketResource
+import com.amazonaws.auth.policy.resources.S3ObjectResource
+
+import jp.classmethod.aws.gradle.s3.CreateBucketTask
+import jp.classmethod.aws.gradle.s3.BucketPolicyTask
+
+/**
+ * subprojectA/build.gradle
+ *
+ * This build.gradle create a S3 Bucket using Gradle AWS plugin.
+ */
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
+    }
+}
+
+plugins {
+    id 'jp.classmethod.aws' version '0.41'
+    id 'jp.classmethod.aws.s3' version '0.41'
+}
+
+aws {
+    profileName = 'default' // Note: change if you want to ues other profile defined in ~/.aws/credentials
+    region = "${Region}"
+}
+
+task createBucket(type: CreateBucketTask) {
+    bucketName "${S3BucketNameA}"
+    region "${Region}"
+    ifNotExists true
+}
+
+task setBucketPolicy(type: BucketPolicyTask) {
+    bucketName "${S3BucketNameA}"
+    policy new Policy().withStatements(
+            new Statement(Statement.Effect.Allow)
+                    .withPrincipals(Principal.AllUsers)
+                    .withActions(S3Actions.GetObject)
+                    .withResources(new S3ObjectResource("${S3BucketNameA}", '*')),
+            new Statement(Statement.Effect.Allow)
+                    .withPrincipals(Principal.AllUsers)
+                    .withActions(S3Actions.ListObjects)
+                    .withResources(new S3BucketResource("${S3BucketNameA}"))
+    )
+}
+
+createBucket.finalizedBy setBucketPolicy
+
+task deleteBucket(type: DeleteBucketTask) {
+    bucketName "${S3BucketNameA}"
+    ifExists true
+}
+
+
+task hello {
+    doLast {
+        println "Hello, subprojectA"
+    }
+}

@@ -1,0 +1,8 @@
+/**
+ * subprojectC/build.gradle
+ */
+task hello {
+    doLast {
+        println "Hello, subprojectC"
+    }
+}
