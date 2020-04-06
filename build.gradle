@@ -1,6 +1,17 @@
 /**
  * build.gradle
  */
+task doAll(dependsOn: [
+        ":subprojectA:hello",
+        ":subprojectB:awsCfnMigrateStack",
+        ":subprojectD:createStack"
+]) {
+    doLast {
+        println "Neo GOF project is done."
+    }
+}
+
+
 
 
 /**

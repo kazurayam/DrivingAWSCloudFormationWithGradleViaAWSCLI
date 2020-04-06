@@ -3,7 +3,7 @@
 # subprojectD/awscfn.sh
 
 Template="file://./src/cloudformation/D-template.yml"
-StackName="StackC"
+StackName="StackD"
 Parameters="file://./build/parameters.json"
 
 source ../awscfn.sh
