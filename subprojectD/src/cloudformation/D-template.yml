@@ -1,8 +1,8 @@
-# subrpojectC/src/cloudformation/C-template.yml
+# subrpojectD/src/cloudformation/D-template.yml
 
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Neo GOF subprojectC creates a S3 Bucket
+Description: Neo GOF subprojectD creates a S3 Bucket
 
 Parameters:
   S3BucketName:
@@ -24,7 +24,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument: ./src/iam/assume-role-policy-document.json
-      RoleName: NeoGofRoleC
+      RoleName: NeoGofRoleD
 
 Outputs:
   S3BucketName:

@@ -1,6 +1,81 @@
 /**
  * subprojectD/build.gradle
+ *
+ * This build.gradle tries to do the following stuff
+ *
+ * 1. create a S3 Bucket
+ * 2. create a IAM Role
+ *
+ * This build.gradle calls a Shell script `awscfn.sh` which calls up
+ * AWS CLI to create a CloudFormation stack which manages S3 and IAM.
+ *
+ * This build.gradle does NOT use the Gradle-Aws-plugin at all.
+ * The plugins may have limited capabilities, may stop its development in long term.
+ *
+ * This build.gradle proves that Gradle can drive AWS CloudFormation via
+ * Shell/AWS CLI as adaptor.
+ * I do not need any gradle plugins to drive CloudFormation from Gradle.
+ *
+ * Gradle + Shell + AWS CLI + CloudFormation : Neo Gang Of Four  --- I recommend this.
+ *
+ * Neo GOF toolset is powerful and is easy to maintain.
+ * Neo GOF toolset enables you to make full use of AWS CLI and CloudFormation
+ * as they continuously evolve in future
+ * .
  */
+
+task createStack {
+    doFirst {
+        // copy ./src/cloudformation/parameters.json file
+        // while interpolating ${name} symbols to values.
+        // See https://mrhaki.blogspot.com/2010/10/gradle-goodness-parse-files-with.html
+        copy {
+            from "$projectDir/src/cloudformation"
+            into "$buildDir"
+            include 'parameters.json.template'
+
+            rename { file -> 'parameters.json' }
+            expand (
+                    bucketName: "${S3BucketNameD}"
+            )
+        }
+        println "created ${buildDir}/parameters.json"
+    }
+    doLast {
+        exec {
+            workingDir "${projectDir}"
+            commandLine './awscfn.sh', 'createStack'
+        }
+    }
+}
+
+task describeStacks {
+    doLast {
+        exec {
+            workingDir "${projectDir}"
+            commandLine './awscfn.sh', 'describeStacks'
+        }
+    }
+}
+
+task deleteStack {
+    doLast {
+        exec {
+            workingDir "${projectDir}"
+            commandLine './awscfn.sh', 'deleteStack'
+        }
+    }
+}
+
+task validateTemplate {
+    doLast {
+        exec {
+            workingDir "${projectDir}"
+            commandLine 'awscfn.sh', 'validateTemplate'
+        }
+    }
+}
+
 task hello {
     doLast {
         println "Hello, subprojectD"
