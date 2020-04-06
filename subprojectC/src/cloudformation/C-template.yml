@@ -1,0 +1,31 @@
+# subrpojectB/src/cloudformation/B-template.yml
+
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Neo GOF subprojectC creates a S3 Bucket
+
+Parameters:
+  S3BucketName:
+    Type: String
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${S3BucketName}
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  NeoGofRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: ./src/iam/assume-role-policy-document.json
+      RoleName: NeoGofRoleC
+
+Outputs:
+  S3BucketName:
+    Value: !Ref S3Bucket

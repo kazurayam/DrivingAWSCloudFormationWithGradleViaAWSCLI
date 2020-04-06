@@ -1,6 +1,76 @@
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+
 /**
- * subprojectB/build.gradle
+ * subprojectC/build.gradle
+ *
+ * This build.gradle tries to do the following stuff
+ *
+ * 1. create a S3 Bucket
+ * 2. create a IAM Role
+ *
+ * using Gradle AWS plugin using jp.classmethod.aws.cloudformation.* classes.
+ *
+ * But it fails. Why?
  */
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
+    }
+}
+
+plugins {
+    id 'jp.classmethod.aws' version '0.41'
+    id 'jp.classmethod.aws.cloudformation' version '0.41'
+}
+
+ext {
+    awsCredentials = new ProfileCredentialsProvider().credentials
+}
+
+aws {
+    profileName = 'default' // Note: change if you want to ues other profile defined in ~/.aws/credentials
+    region = "${Region}"
+}
+
+cloudFormation {
+    stackName 'subprojectB'
+    stackParams([
+            S3BucketName: "${S3BucketNameC}"
+    ])
+    capabilityIam true
+    templateFile project.file("src/cloudformation/C-template.yml")
+}
+// awsCfnMigrateStack task is provided by the gradle-aws-plugin
+// awsCfnDeleteStack  task is provided by the gradle-aws-plugin
+
+/**
+ * The following invokation fails.
+ *
+ * <PRE>
+ * $ ./gradlew :subprojectC:awsCfnMigrateStack
+ * </PRE>
+ *
+ * <PRE>
+ * * What went wrong:
+ * Execution failed for task ':subprojectC:awsCfnMigrateStack'.
+ * > Requires capabilities : [CAPABILITY_NAMED_IAM] (Service: AmazonCloudFormation; Status Code: 400; Error Code: InsufficientCapabilitiesException; Request ID: 26fb628e-d3ee-4a51-a088-31708fe37c19)
+ * </PRE>
+ *
+ * Why?
+ *
+ * Because the jp.classmethod.aws.cloudformation.AmazonCloudFormationMigrateStackTask class
+ * does not support the "--capabilities CAPABILITY_NAMED_IAM" option which was
+ * newly introduced in 2017 after the class initially developed in 2015.
+ * See the following issue:
+ * - https://github.com/classmethod/gradle-aws-plugin/issues/50
+ * This issue is still open.
+ */
+
+
+
 task hello {
     doLast {
         println "Hello, subprojectB"

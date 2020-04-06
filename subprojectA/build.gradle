@@ -5,23 +5,15 @@ import com.amazonaws.auth.policy.actions.S3Actions
 import com.amazonaws.auth.policy.resources.S3BucketResource
 import com.amazonaws.auth.policy.resources.S3ObjectResource
 
-import jp.classmethod.aws.gradle.s3.CreateBucketTask
 import jp.classmethod.aws.gradle.s3.BucketPolicyTask
+import jp.classmethod.aws.gradle.s3.CreateBucketTask
 import jp.classmethod.aws.gradle.s3.DeleteBucketTask
-import com.amazonaws.auth.policy.Policy
-import com.amazonaws.auth.policy.Principal
-import com.amazonaws.auth.policy.Statement
-import com.amazonaws.auth.policy.actions.S3Actions
-import com.amazonaws.auth.policy.resources.S3BucketResource
-import com.amazonaws.auth.policy.resources.S3ObjectResource
-
-import jp.classmethod.aws.gradle.s3.CreateBucketTask
-import jp.classmethod.aws.gradle.s3.BucketPolicyTask
 
 /**
  * subprojectA/build.gradle
  *
- * This build.gradle create a S3 Bucket using Gradle AWS plugin.
+ * This build.gradle create a S3 Bucket using
+ * jp.classmethod.aws.gradle.s3.CreateBucketTask bundled in the Gradle AWS plugin.
  */
 
 buildscript {

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# subprojectC/awscfn.sh
+# subprojectD/awscfn.sh
 
-Template="file://./src/cloudformation/C-template.yml"
+Template="file://./src/cloudformation/D-template.yml"
 StackName="StackC"
 
 source ../awscfn.sh

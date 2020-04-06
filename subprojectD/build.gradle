@@ -1,8 +1,8 @@
 /**
- * subprojectC/build.gradle
+ * subprojectD/build.gradle
  */
 task hello {
     doLast {
-        println "Hello, subprojectC"
+        println "Hello, subprojectD"
     }
 }

@@ -1,8 +1,50 @@
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+
 /**
- * subprojectA/build.gradle
+ * subprojectB/build.gradle
+ *
+ * This build.gradle create a S3 Bucket using Gradle AWS plugin using
+ * jp.classmethod.aws.cloudformation.* classes
  */
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "jp.classmethod.aws:gradle-aws-plugin:0.41"
+    }
+}
+
+plugins {
+    id 'jp.classmethod.aws' version '0.41'
+    id 'jp.classmethod.aws.cloudformation' version '0.41'
+}
+
+ext {
+    awsCredentials = new ProfileCredentialsProvider().credentials
+}
+
+aws {
+    profileName = 'default' // Note: change if you want to ues other profile defined in ~/.aws/credentials
+    region = "${Region}"
+}
+
+cloudFormation {
+    stackName 'subprojectB'
+    stackParams([
+            S3BucketName: "${S3BucketNameB}"
+    ])
+    capabilityIam true
+    templateFile project.file("src/cloudformation/B-template.yml")
+}
+// awsCfnMigrateStack task is provided by the gradle-aws-plugin
+// awsCfnDeleteStack  task is provided by the gradle-aws-plugin
+
+
+
+
 task hello {
     doLast {
-        println "Hello, subprojectA"
+        println "Hello, subprojectB"
     }
 }
