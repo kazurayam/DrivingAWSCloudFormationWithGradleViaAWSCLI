@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+jar {
+    archiveBaseName = 'neogof'
+    archiveVersion = "${rootProject.version}"
+    archiveClassifier = ''
+}
+
+mainClassName = 'example.HelloPojo'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+def defaultEncoding = 'UTF-8'
+[compileJava, compileTestJava]*.options*.encoding = defaultEncoding
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-core
+    implementation group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.0'
+}

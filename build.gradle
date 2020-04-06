@@ -1,13 +1,31 @@
 /**
  * build.gradle
  */
-task doAll(dependsOn: [
-        ":subprojectA:hello",
-        ":subprojectB:awsCfnMigrateStack",
+
+project.version = '0.1.0'
+
+/**
+ * 1 build a Java project to create a jar file,
+ * 2 create a AWS CloudFormation Stack to make a S3 Buket and a IAM Role
+ */
+task deploy(dependsOn: [
+        ":app:build",
         ":subprojectD:createStack"
 ]) {
     doLast {
         println "Neo GOF project is done."
+    }
+}
+
+
+/**
+ * undo what the "deploy" task did.
+ */
+task undeploy(dependsOn: [
+        ":subprojectD:deleteStack"
+]) {
+    doLast {
+        println "Neo GOF project undone."
     }
 }
 
