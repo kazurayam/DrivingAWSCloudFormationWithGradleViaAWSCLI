@@ -31,10 +31,31 @@ A question came up to me.
 
 >How can a `build.gradle` script of Gradle make full use of AWS CloudFormation? 
 
+I found 2 possible approaches.
 
-## Demonstration of Neo GOF
+1. use [Gradle Aws Plugin](https://github.com/classmethod/gradle-aws-plugin):
+the plugin adds some Gradle tasks for managing various AWS resources including CloudFormation.
+2. Neo GOF toolset: Gradle + Shell + AWS CLI + CloudFormation. 
+The `build.gradle` scripts calls built-in `Exec` task which executes 
+an external shell script file [`awscli-cooked.sh`](./awscli-cooked.sh) which executes
+[AWS CLI](https://aws.amazon.com/cli/) to drive CloudFormation.
 
-## Description
+I made a research for a few days and got a conclusion that Neo GOF toolset is better than the plugin.
+I will explain how NeoGOF toolset works first.
+Later I will also explain what I found about the plugin.
+
+## Demonstration of Neo GOF toolset
+
+### Prerequisites
+
+- I have Java 8 or higher
+- I have AWS Account for my use,
+- I have a IAM User for you with enough privileges.
+- I have [AWS CLI](https://aws.amazon.com/cli/) is installed and configured.
+- I have the `default` profile in `~/.aws/credentials` is configured to point my IAM User.
+
+
+## Discussion about the alternative approach
 
 
 
