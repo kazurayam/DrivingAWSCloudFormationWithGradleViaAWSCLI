@@ -61,6 +61,7 @@ Later I will also explain what I found about the plugin.
 - [AWS CLI](https://aws.amazon.com/cli/) installed and 
 [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) on my Mac/PC.
 The `default` profile in `~/.aws/credentials` file is configured to point my priviledged IAM User.
+- I used Mac, though this project should work on Windows and Linux as well.
 
 ## Project structure
 
@@ -221,9 +222,6 @@ The `createStack` task in
 ```
 task createStack {
     doFirst {
-        // copy ./src/cloudformation/parameters.json file
-        // while interpolating ${name} symbols to values.
-        // See https://mrhaki.blogspot.com/2010/10/gradle-goodness-parse-files-with.html
         copy {
             from "$projectDir/src/cloudformation"
             into "$buildDir"
@@ -246,13 +244,14 @@ task createStack {
 ```
 
 The `createStack` task does 2 things. First it executes a `copy` task.
-It copies a template file to `build/parameters.json` while interpolating
-a `$bucketname` symbol to the value specified in the `rootProject/gradle.properties` file.
 The `copy` task prepares a set of parameters to be passed to CloudFormation Template.
+It copies a template file into `build/parameters.json` while interpolating
+a `$bucketname` symbol to the value specified in the `rootProject/gradle.properties` file.
 
-The `doLast` section calls `exec` task which executes a bash script file 
-[`awscli-cooked.sh`](./awscli-cooked.sh) with sub-command `createStack`. Let's have a look at
-the code fragment of which is executed:
+The `doLast` section calls `exec` task which executes 
+an external bash script file 
+[`awscli-cooked.sh`](./awscli-cooked.sh) with sub-command `createStack`. 
+Let's have a look at the code fragment of which is executed:
 
 ```
 sub_createStack() {
@@ -260,16 +259,15 @@ sub_createStack() {
 }
 ```
 
-You will easily see what it is. The shell function 
+Any AWS developer will easily see what it is. The shell function 
 `sub_createStack` invokes AWS CLI to activate CloudFormation 
-for creating a Stack.
+for creating a Stack with several options/parameters specified as appropriate.
 
 The shell script [`awscli-cooked.sh`](./awscli-cooked.sh) implements a few 
 other subcommands: `deleteStack`, `describeStacks`, `validateTemplate`. 
 All of them are one-liners which invokes AWS CLI to active CloudFormation.
 
-Easy to understand, isn't it. No magic here.
-
+Easy to understand, isn't it?
 
 ## Conclusion
 
