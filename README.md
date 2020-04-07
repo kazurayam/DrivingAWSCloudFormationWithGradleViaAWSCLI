@@ -11,6 +11,8 @@ Build and Delivery by the toolset of
 **Gradle + Shell + AWS CLI + CloudFormation** (new Gang of Four)
 makes life easy for Java/Groovy/Kotlin developers.
 
+![Neo GOF Overview](./docs/images/overview.png)
+
 ## Problem to solve
 
 1. I want to use **[Gradle](https://gradle.org/) Build Tool** to achieve
@@ -51,9 +53,12 @@ Later I will also explain what I found about the plugin.
 ### Prerequisites
 
 - I have Java 8 or higher
+- I have Bash shell. On Windows I installed 
+[Git for Windows](https://gitforwindows.org/) and got bundled "Git Bash".
 - I have an AWS Account for my use
 - I have an IAM User with enough privileges.
-- I have [AWS CLI](https://aws.amazon.com/cli/) installed and configured on my Mac/PC
+- I have [AWS CLI](https://aws.amazon.com/cli/) installed and 
+[configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) on my Mac/PC
 - I have the `default` profile in the `~/.aws/credentials` file is configured to point my priviledged IAM User.
 
 ### If you want to try yourself
@@ -79,7 +84,56 @@ provided that you have AWS CLI installed:
 $ aws sts get-caller-identity --query Account | md5sum | cut -c 1-10
 ```
 
+## Project structure
+
+The NeoGOF project is a Gradle Multi-project, which comprises with 5 sub-projects.
+```
+$NeoGOF
+├─app
+├─subprojectA
+├─subprojectB
+├─subprojectC
+└─subprojectD
+```
+
+On Commandline UI, I would `cd` to the rootProject, and execute `./gradlew` command.
+For example, the `hello` task of the rootProject will call each `hello` tasks defined
+each sub-projects.
+
+```
+$ cd $NeoGOF
+$ ./gradlew -q hello
+Hello, subprojectA
+Hello, subprojectB
+Hello, subprojectB
+Hello, subprojectD
+Hello, rootProject
+```
+
+Or, you can execute a specific task of a subproject by typing `:<subPorjectName>:<taskName>`.
+For example;
+
+```
+$ cd $NeoGOF
+$ ./gradlew -q :subprojectA:hello
+Hello, subprojectA
+```
+
 ## Approach 1: using Gradle plugin
+
+Here I assume I have checked out this project to a local directory `/Users/myname/github/NeoGOF`.
+I will write `$NeoGOF` for short of `/Users/myname/github/NeoGOF`.
+
+### Quickstart
+
+In Bash commandline, type
+```
+$ cd $NeoGOF
+$ ./gradlew deploy
+```
+
+The ````
+
 
 
 
@@ -90,14 +144,15 @@ Small Gradle plugin projects for managing AWS resources, such as
 may fail to keep pace with the quick and continuous development of AWS services.
 
 On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
-products which AWS supports to make their service available to users keeping
-pace with every AWS details. Gradle script `build.gradle` can execute external
-shell scripts which calls AWS CLI and indirectly can drive CloudFormation in its full scale. 
+products which AWS supports to make their service available to users.
+Users can rely on these 2 products.
+If a `build.gradle` execute an external shell scripts which calls AWS CLI,
+then it can indirectly drive CloudFormation in its full scale. 
+The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
+is powerful and easy to maintain in future.
 
-The combination of Gradle + Shell + AWS CLI + CloudFormation is powerful and 
-easy to maintain projects while AWS services quickly and continuously evolve.
-
-Gradle plugins to manage AWS resources --- I think I no longer need them.
+Gradle plugins to manage AWS resources --- I think I would no longer need them.
+I would prefer Neo GOF.
 
 
 
