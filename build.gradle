@@ -13,10 +13,10 @@ task deploy(dependsOn: [
         ":subprojectD:createStack"
 ]) {
     doLast {
-        println "Neo GOF project is done."
+        println "Neo GOF project has been deployed"
     }
 }
-
+tasks.getByPath(":subprojectD:createStack").dependsOn(":app:build")
 
 /**
  * undo what the "deploy" task did.
@@ -25,7 +25,7 @@ task undeploy(dependsOn: [
         ":subprojectD:deleteStack"
 ]) {
     doLast {
-        println "Neo GOF project undone."
+        println "Neo GOF project has been un-deployed"
     }
 }
 
@@ -46,10 +46,12 @@ task undeploy(dependsOn: [
  * Hello, subprojectB
  * Hello, subprojectC
  * Hello, subprojectD
+ * Hello, app
  * Hello, rootProject
  * </PRE>
  */
 task hello(dependsOn:[
+        ":app:hello",
         ":subprojectA:hello",
         ":subprojectB:hello",
         ":subprojectC:hello",

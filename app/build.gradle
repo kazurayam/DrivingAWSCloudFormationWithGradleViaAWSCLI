@@ -24,3 +24,16 @@ dependencies {
     // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-core
     implementation group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.0'
 }
+
+task showJarBuiltMessage {
+    doLast {
+        println "neogof-${rootProject.version}.jar has been built"
+    }
+}
+build.finalizedBy showJarBuiltMessage
+
+task hello {
+    doLast {
+        println "Hello, app"
+    }
+}
