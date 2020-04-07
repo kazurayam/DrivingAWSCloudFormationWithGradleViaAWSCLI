@@ -9,7 +9,7 @@ jar {
     archiveClassifier = ''
 }
 
-mainClassName = 'example.HelloPojo'
+mainClassName = 'example.Hello'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

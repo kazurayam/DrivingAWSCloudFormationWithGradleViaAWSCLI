@@ -82,7 +82,7 @@ Later I will also explain what I found about the plugin.
 The `default` profile in `~/.aws/credentials` file is configured to point my priviledged IAM User.
 - I used Mac, though this project should work on Windows and Linux as well.
 
-<a name="project_structure" id=""project_structure"></a>
+<a name="project_structure" id="project_structure"></a>
 ## Project structure
 
 The NeoGOF project is a Gradle Multi-project, which comprises with 5 sub-projects.
@@ -236,11 +236,18 @@ $ ./gradlew :subprojectD/createStack
 ```
 
 The `app` sub-project is a small Gradle project with `java` plugin applied.
-It has a Java class `example.HelloPojo`. The `build` task of the `app` project
-just compiles the Java source and build a jar file. The `app` project is a
-typical Gradle project and has nothing new.
 
-The `subprojectD` sub-project indirectly activates AWS CloudFormartion to
+The `app` sub-project contains a Java class `example.HelloPojo`. Theclass implements 
+`com.amazonaws.services.lambda.runtime.RequestHandler`. 
+Therefore the `example.Hello` class can run as a AWS Lambda Function.
+
+The `build` task of the `app` project compiles the Java source and 
+build a jar file. 
+The `app` project is a typical Gradle project and has nothing new.
+
+----
+
+The `subprojectD` sub-project indirectly activates AWS CloudFormation to
  provision S3 Bucket and IAM role. 
  
 Please note, **the `deploy` task combines a Gradle built-in feature 
@@ -283,11 +290,11 @@ The `createStack` task does 2 things.
 First it executes a `copy` task.
 The `copy` task prepares a set of parameters to be passed to CloudFormation Template.
 It copies a template file into `build/parameters.json` while interpolating
-a `$bucketname` symbol to the value specified in the `rootProject/gradle.properties` file.
+a `$bucketName` symbol in the template to the value specified in the `rootProject/gradle.properties` file.
 
 Secondly it executes a `exec` task which executes an external bash script file 
 [`awscli-cooked.sh`](./awscli-cooked.sh) with sub-command `createStack`. 
-Let's have a look at the code fragment:
+Let's have a quick look at the code fragment:
 
 ```
 sub_createStack() {
@@ -324,9 +331,10 @@ On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
 products which AWS fully supports to make their services available to users.
 Users can safely rely on the CLI and CF.
 
-Therefore a `build.gradle` which executes indirectly CloudFormation 
-via Shell+CLI is assured that it cna utilize full features of AWS services
-which combining the Gradle built-in features such as building Java applications. 
+Therefore a Gradle `build.gradle` which executes indirectly CloudFormation 
+via Shell+CLI is assured that it can utilize full features of AWS services
+together with Gradle's built-in features such as building a AWS Lambda 
+Function in Java. 
 
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
 is a powerful toolset. It will remain easy to maintain in future.

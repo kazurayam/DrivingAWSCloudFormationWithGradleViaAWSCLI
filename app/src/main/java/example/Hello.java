@@ -1,77 +1,69 @@
 package example;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.Context;
+
+import example.Hello.Request;
+import example.Hello.Response;
 
 /**
- * from https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/with-android-create-package.html
+ * https://docs.aws.amazon.com/ja_jp/lambda/latest/dg/java-handler-interfaces.html
  */
-public class HelloPojo {
+public class Hello implements RequestHandler<Request, Response> {
 
     // Define two classes/POJOs for use with Lambda function.
-    public static class RequestClass {
+    public static class Request {
         String firstName;
         String lastName;
-
         public String getFirstName() {
             return firstName;
         }
-
         public void setFirstName(String firstName) {
             this.firstName = firstName;
         }
-
         public String getLastName() {
             return lastName;
         }
-
         public void setLastName(String lastName) {
             this.lastName = lastName;
         }
-
-        public RequestClass(String firstName, String lastName) {
+        public Request(String firstName, String lastName) {
             this.firstName = firstName;
             this.lastName = lastName;
         }
-
-        public RequestClass() {
-        }
+        public Request() {}
     }
 
-    public static class ResponseClass {
+    public static class Response {
         String greetings;
-
         public String getGreetings() {
             return greetings;
         }
-
         public void setGreetings(String greetings) {
             this.greetings = greetings;
         }
-
-        public ResponseClass(String greetings) {
+        public Response(String greetings) {
             this.greetings = greetings;
         }
-
-        public ResponseClass() {
-        }
-
+        public Response() { }
     }
 
-    public static ResponseClass myHandler(RequestClass request, Context context){
+    public Response handleRequest(Request request, Context context){
         String greetingString = greeting(request);
         context.getLogger().log(greetingString);
-        return new ResponseClass(greetingString);
+        return new Response(greetingString);
     }
 
-    public static String greeting(RequestClass request) {
-        return String.format("Hello %s, %s.", request.firstName, request.lastName);
+    public static String greeting(Request request) {
+        return String.format("Hello, %s %s.", request.firstName, request.lastName);
     }
 
     public static void main(String[] args) {
-        RequestClass request = new RequestClass();
+        Request request = new Request();
         request.setFirstName("Albert");
         request.setLastName("Camus");
-        String greetingString = HelloPojo.greeting(request);
+        String greetingString = Hello.greeting(request);
         System.out.println(greetingString);
     }
 }
