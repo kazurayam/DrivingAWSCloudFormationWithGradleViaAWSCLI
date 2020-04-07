@@ -5,7 +5,23 @@ Author: kazurayam, japan
 
 Date: 7th April 2020
 
-## Summary
+Table of contents:
+- [Overview](#overview)
+- [Problem to solve](#problem)
+- [Solution](#solution)
+- [Prerequisites](#prerequisites)
+- [Project structure](#project_structure)
+- [If you want to try yourself](#if_you_want)
+  - [S3 Bucket names need to be globally unique](#unique_bucket_name)
+  - [One-liner to generate your identity](#identity)
+  - [*.sh files must be executable](#sh_mode)
+- [Description1: Neo GOF toolset](#NeoGOF)
+  - [Head-first demonstration](#demo)
+  - [Internal of the :subprojectD:createStack task](#createStack)gi
+- [Conclusion](#conclusion)
+
+<a name="overview" id="overview"></a>
+## Overview
 
 Build and Delivery by the toolset of
 **Gradle + Shell + AWS CLI + CloudFormation** (new Gang of Four)
@@ -13,6 +29,7 @@ makes life easy for Java/Groovy/Kotlin developers.
 
 ![Neo GOF Overview](./docs/images/overview.png)
 
+<a name="proble" id="problem"></a>
 ## Problem to solve
 
 1. I want to use **[Gradle](https://gradle.org/) Build Tool** to achieve
@@ -34,16 +51,17 @@ AWS Lambda Functions, CloudWatch Event Rules,
 
 A question came up to me. **How can a Gradle `build.gradle` script make full use of AWS CloudFormation?** 
 
+<a name="solution" id="solution"></a>
 ## Solution
 
 I found 2 possible approaches.
 
-1. use a Gradle AWS plugin [jp.classmethod.aws](https://github.com/classmethod/gradle-aws-plugin):
-the plugin adds some Gradle tasks for managing various AWS resources including CloudFormation.
-2. use combination of Gradle + Shell + AWS CLI + CloudFormation:  
+1. use combination of Gradle + Shell + AWS CLI + CloudFormation:  
 The `build.gradle` scripts calls built-in `Exec` task which executes 
 an external shell script file [`awscli-cooked.sh`](./awscli-cooked.sh) which executes
 [AWS CLI](https://aws.amazon.com/cli/) to drive CloudFormation.
+2. use a Gradle AWS plugin [jp.classmethod.aws](https://github.com/classmethod/gradle-aws-plugin):
+the plugin adds some Gradle tasks for managing various AWS resources including CloudFormation.
 
 I did a research for a few days and got a conclusion that the Gang of Four toolset 
 is better than a single Gradle plugin.
@@ -51,6 +69,7 @@ is better than a single Gradle plugin.
 I will explain how the Neo GOF toolset works first.
 Later I will also explain what I found about the plugin.
 
+<a name="prerequisites" id="prerequisites"></a>
 ## Prerequisites
 
 - Java 8 or higher
@@ -63,6 +82,7 @@ Later I will also explain what I found about the plugin.
 The `default` profile in `~/.aws/credentials` file is configured to point my priviledged IAM User.
 - I used Mac, though this project should work on Windows and Linux as well.
 
+<a name="project_structure" id=""project_structure"></a>
 ## Project structure
 
 The NeoGOF project is a Gradle Multi-project, which comprises with 5 sub-projects.
@@ -100,9 +120,10 @@ $ ./gradlew -q :subprojectA:hello
 Hello, subprojectA
 ```
 
-
+<a name="if_you_want" id="if_you_want"></a>
 ## If you want to try yourself
 
+<a name="unique_bucket_name" id="unique_bucket_name"></a>
 ### S3 Bucket names need to be globally unique
 
 You can download an zip archive of the project from the
@@ -126,6 +147,7 @@ alternative names for your own use.
 I would recommend you to replace the leading `bb4b24b08c` part 
 with some other string.
 
+<a name="identity" id="identity"></a>
 ### One-liner to generate your identity
 
 You want to generate your identity to make your S3 Bucket names globally unique.
@@ -138,6 +160,7 @@ Here I assume that you have AWS CLI installed:
 $ aws sts get-caller-identity --query Account | md5sum | cut -c 1-10
 ```
 
+<a name="sh_mode" id="sh_mode"></a>
 ### *.sh files need to be executable
 
 Another thing you need to be aware. Once cloned out, it is likely that
@@ -150,7 +173,8 @@ $ chmod +x ./awscli-cooked.sh
 $ chmod +x ./subprojectD/awscli-cooked.sh
 ```
 
-## Description: Neo GOF toolset
+<a name="NeoGOF" id="NeoGOF"></a>
+## Description1: Neo GOF toolset
 
 You can locate the project anywhere on your PC. 
 For example I have cloned out this project to a local directory 
@@ -158,6 +182,7 @@ For example I have cloned out this project to a local directory
 In the following description, I will use a symbol *`$NeoGOF`* 
 for short of this local path.
 
+<a name="demo" id="demo"></a>
 ### Head-first demonstration
 
 In Bash commandline, type
@@ -199,7 +224,16 @@ task deploy(dependsOn: [
 ```
 
 The `deploy` task calls 2 tasks: `:app:build` and `:projectD:createStack`;
-and when they finished the `deploy` task shows a farewell message.
+and when they finished the `deploy` task shows a farewell message. Of course 
+you can execte this task independentlyas:
+
+```
+$ cd $NeoGOF
+$ ./gradlew :app:build
+...
+$ ./gradlew :subprojectD/createStack
+...
+```
 
 The `app` sub-project is a small Gradle project with `java` plugin applied.
 It has a Java class `example.HelloPojo`. The `build` task of the `app` project
@@ -213,7 +247,8 @@ Please note, **the `deploy` task combines a Gradle built-in feature
 (building Java application) and a extended feature 
 (driving AWS CloudFormation) just seamlessly**.
 
-### Internal of the `createStack` task
+<a name="createStack" id="createStack"></a>
+### Internal of the `:subprojectD:createStack` task
  
 The `createStack` task in 
  [`subprojectD/build.gradle`](./subprojectD/build.gradle) 
@@ -243,15 +278,16 @@ task createStack {
 }
 ```
 
-The `createStack` task does 2 things. First it executes a `copy` task.
+The `createStack` task does 2 things.
+
+First it executes a `copy` task.
 The `copy` task prepares a set of parameters to be passed to CloudFormation Template.
 It copies a template file into `build/parameters.json` while interpolating
 a `$bucketname` symbol to the value specified in the `rootProject/gradle.properties` file.
 
-The `doLast` section calls `exec` task which executes 
-an external bash script file 
+Secondly it executes a `exec` task which executes an external bash script file 
 [`awscli-cooked.sh`](./awscli-cooked.sh) with sub-command `createStack`. 
-Let's have a look at the code fragment of which is executed:
+Let's have a look at the code fragment:
 
 ```
 sub_createStack() {
@@ -259,7 +295,8 @@ sub_createStack() {
 }
 ```
 
-Any AWS developer will easily see what it is. The shell function 
+Any AWS developer will easily see what this shell function does.
+The shell function 
 `sub_createStack` invokes AWS CLI to activate CloudFormation 
 for creating a Stack with several options/parameters specified as appropriate.
 
@@ -269,6 +306,11 @@ All of them are one-liners which invokes AWS CLI to active CloudFormation.
 
 Easy to understand, isn't it?
 
+
+## Description2: Gradle AWS Plugin --- what we can and can not
+
+
+<a name="conclusion" id="conclusion"></a>
 ## Conclusion
 
 I want to express my appreciations and respects to the developers of
@@ -276,14 +318,16 @@ the Gradle AWS Plugin
 [jp.classmethod.aws](https://github.com/classmethod/gradle-aws-plugin).
 However I would note that small Gradle plugin projects 
 for managing AWS resources may fail keeping pace with 
-the continuous and rapid development of AWS services.
+the rapid and continuous development of AWS services.
 
 On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
 products which AWS fully supports to make their services available to users.
-Users can rely on the CLI and CF.
+Users can safely rely on the CLI and CF.
 
-If a `build.gradle` execute an external shell scripts which calls AWS CLI,
-then it can indirectly drive CloudFormation in its full scale. 
+Therefore a `build.gradle` which executes indirectly CloudFormation 
+via Shell+CLI is assured that it cna utilize full features of AWS services
+which combining the Gradle built-in features such as building Java applications. 
+
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
 is a powerful toolset. It will remain easy to maintain in future.
 
