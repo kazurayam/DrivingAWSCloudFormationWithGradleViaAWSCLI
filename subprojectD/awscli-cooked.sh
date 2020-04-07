@@ -6,6 +6,6 @@ Template="file://./src/cloudformation/D-template.yml"
 StackName="StackD"
 Parameters="file://./build/parameters.json"
 
-source ../awscfn.sh
+source ../awscli-cooked.sh
 
 

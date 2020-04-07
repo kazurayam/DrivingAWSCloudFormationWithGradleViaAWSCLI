@@ -6,22 +6,19 @@
  * 1. create a S3 Bucket
  * 2. create a IAM Role
  *
- * This build.gradle calls a Shell script `awscfn.sh` which calls up
+ * This build.gradle calls a Shell script `awscli-cooked.sh` which calls up
  * AWS CLI to create a CloudFormation stack which manages S3 and IAM.
  *
  * This build.gradle does NOT use the Gradle-Aws-plugin at all.
  * The plugins may have limited capabilities, may stop its development in long term.
  *
- * This build.gradle proves that Gradle can drive AWS CloudFormation via
- * Shell/AWS CLI as adaptor.
+ * This build.gradle proves that Gradle can drive AWS CloudFormation via Shell/AWS CLI as adaptor.
+ * Gradle + Shell + AWS CLI + CloudFormation : Neo Gang of Four  --- I would recommend this.
  * I do not need any gradle plugins to drive CloudFormation from Gradle.
  *
- * Gradle + Shell + AWS CLI + CloudFormation : Neo Gang Of Four  --- I recommend this.
- *
  * Neo GOF toolset is powerful and is easy to maintain.
- * Neo GOF toolset enables you to make full use of AWS CLI and CloudFormation
- * as they continuously evolve in future
- * .
+ * Neo GOF toolset enables you to make full use of AWS CLI and CloudFormation as they continuously evolve in future
+ *
  */
 
 task createStack {
@@ -44,7 +41,7 @@ task createStack {
     doLast {
         exec {
             workingDir "${projectDir}"
-            commandLine './awscfn.sh', 'createStack'
+            commandLine './awscli-cooked.sh', 'createStack'
         }
     }
 }
@@ -53,7 +50,7 @@ task describeStacks {
     doLast {
         exec {
             workingDir "${projectDir}"
-            commandLine './awscfn.sh', 'describeStacks'
+            commandLine './awscli-cooked.sh', 'describeStacks'
         }
     }
 }
@@ -62,7 +59,7 @@ task deleteStack {
     doLast {
         exec {
             workingDir "${projectDir}"
-            commandLine './awscfn.sh', 'deleteStack'
+            commandLine './awscli-cooked.sh', 'deleteStack'
         }
     }
 }
@@ -71,7 +68,7 @@ task validateTemplate {
     doLast {
         exec {
             workingDir "${projectDir}"
-            commandLine 'awscfn.sh', 'validateTemplate'
+            commandLine 'awscli-cooked.sh', 'validateTemplate'
         }
     }
 }
