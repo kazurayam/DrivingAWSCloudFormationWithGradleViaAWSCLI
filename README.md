@@ -473,8 +473,8 @@ Obvisously, the plugin has not been maintained and is now outdated.
 
 The originator of 
 [jp.classmethod.aws](https://plugins.gradle.org/plugin/jp.classmethod.aws),
-miyamoto-daisuke who as unfortunately already 
-[passed away](https://github.com/classmethod/gradle-aws-plugin/issues/188),
+miyamoto-daisuke who has already 
+[passed away](https://github.com/classmethod/gradle-aws-plugin/issues/188) unfortunately,
  commented in a open issue
 [RDSInstance Support](https://github.com/classmethod/gradle-aws-plugin/issues/2)
 
