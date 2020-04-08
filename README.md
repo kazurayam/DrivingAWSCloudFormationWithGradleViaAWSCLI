@@ -299,7 +299,48 @@ The `copy` task prepares a set of parameters to be passed to CloudFormation Temp
 It copies a template file into `build/parameters.json` while interpolating
 a `$bucketName` symbol in the template to the value specified in the `rootProject/gradle.properties` file.
 
-Secondly it executes a `exec` task which executes an external bash script file 
+Let me show you an example how `parameter.json` file is prepared.
+
+Template: `$projectDir/src/cloudformation/parameters.json.template`:
+
+```
+[
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "${bucketName}"
+  }
+]
+```
+
+Values defined: `$projectDir/gradle.properties`
+
+```
+...
+S3BucketNameB=bb4b24b08c-20200406-neogof-b
+...
+```
+
+Output: `$buildDir/parameters.json`
+
+```
+[
+  {
+    "ParameterKey": "S3BucketName",
+    "ParameterValue": "bb4b24b08c-20200406-neogof-b"
+  }
+]
+``` 
+
+The `sub_createStack` function in `awscli-cooked.sh` file will pass 
+the generated `$buildDir/parameters.json` to CloudFormation.
+
+Thus you can transfer the parameter values defined in Gradle world 
+into the CloudFormation Template world.
+
+---
+
+Secondly the `createStack` task in `subprojectD/build.gradle` executes 
+a `exec` task which executes an external bash script file 
 [`awscli-cooked.sh`](./awscli-cooked.sh) with sub-command `createStack`. 
 Let's have a quick look at the code fragment:
 
