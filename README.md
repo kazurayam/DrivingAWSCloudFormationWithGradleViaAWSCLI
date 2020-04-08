@@ -322,7 +322,7 @@ Values defined: `$projectDir/gradle.properties`
 
 ```
 ...
-S3BucketNameB=bb4b24b08c-20200406-neogof-b
+S3BucketNameD=bb4b24b08c-20200406-neogof-d
 ...
 ```
 
@@ -332,7 +332,7 @@ Output: `$buildDir/parameters.json`
 [
   {
     "ParameterKey": "S3BucketName",
-    "ParameterValue": "bb4b24b08c-20200406-neogof-b"
+    "ParameterValue": "bb4b24b08c-20200406-neogof-d"
   }
 ]
 ``` 
