@@ -242,7 +242,8 @@ $ ./gradlew :subprojectD/createStack
 
 The `app` sub-project is a small Gradle project with `java` plugin applied.
 
-The `app` sub-project contains a Java class `example.HelloPojo`. Theclass implements 
+The `app` sub-project contains a Java class `example.HelloPojo`. 
+The class implements 
 `com.amazonaws.services.lambda.runtime.RequestHandler`. 
 Therefore the `example.Hello` class can run as a AWS Lambda Function.
 
