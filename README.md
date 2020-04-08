@@ -211,6 +211,12 @@ Neo GOF project has been deployed
 Here I wrote `84**********`. This portion is the 12 digits of my AWS Account ID.
 You will see different 12 digits of your AWS Account ID when you tried yourself.
 
+Executing `./gradlw deploy` is designed to provision 2 AWS resources.
+1. a S3 Bucket named `bb4b24b08c-20200406-neogof-d`
+2. a IAM Role named `NeoGofRoleD`
+
+---
+
 Many things will be performed behind the sean. Let me follow the code
 and explain the detail.
 
