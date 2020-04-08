@@ -230,7 +230,7 @@ task deploy(dependsOn: [
 
 The `deploy` task calls 2 tasks: `:app:build` and `:projectD:createStack`;
 and when they finished the `deploy` task shows a farewell message. Of course 
-you can execte this task independentlyas:
+you can execute these tasks independently as:
 
 ```
 $ cd $NeoGOF
