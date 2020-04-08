@@ -17,7 +17,12 @@ Table of contents:
   - [*.sh files must be executable](#sh_mode)
 - [Description1: Neo GOF toolset](#NeoGOF)
   - [Head-first demonstration](#demo)
-  - [Internal of the :subprojectD:createStack task](#createStack)gi
+  - [Internal of the :subprojectD:createStack task](#createStack)
+- [Description2: Gradle AWS Plugin](#gradle_aws_plugin) 
+  - [subprojectA: create a S3 Bucket using dedicated Task](#subprojectA)
+  - [subprojectB: create a S3 Bucket using CloudFormation via plugin](#subprojectB)
+  - [subprojectC: failed to create a IAM Role using CloudFormation via plugin](#subprojectC)
+    - [Root cause of failure](#InsufficientCapabilitiesException)
 - [Conclusion](#conclusion)
 
 <a name="overview" id="overview"></a>
@@ -309,12 +314,163 @@ for creating a Stack with several options/parameters specified as appropriate.
 
 The shell script [`awscli-cooked.sh`](./awscli-cooked.sh) implements a few 
 other subcommands: `deleteStack`, `describeStacks`, `validateTemplate`. 
-All of them are one-liners which invokes AWS CLI to active CloudFormation.
+All of them are one-liners which invoke AWS CLI to activate CloudFormation.
 
-Easy to understand, isn't it?
+Simple and easy to understand, isn't it?
 
+<a name="gradle_aws_plugin" id="gradle_aws_plugin"></a>
+## Description2: Gradle AWS Plugin
 
-## Description2: Gradle AWS Plugin --- what we can and can not
+Visit [Gradle Plugins Repository](https://plugins.gradle.org/) and 
+make query with keyword `aws`. You will find quite a few Gradle plugins 
+that enables managing AWS resources. I picked up 
+[jp.classmethod.aws](https://plugins.gradle.org/plugin/jp.classmethod.aws).
+I will show you what I tried with this plugin.
+
+<a name="subprojectA" id="subprojectA"></a>
+### subprojectA: create a S3 Bucket using dedicated Task
+
+In the commandline with bash, I can try this:
+
+```
+$ cd $NeoGOF
+$ ./gradlew :subprojectA:createBucket
+```
+
+Then I got a new S3 Bucket is successfully created in my AWS Account.
+
+In the [subprojectA/build.gradle](./subprojectA/build.gradle) file,
+I have the following task definition:
+
+```
+task createBucket(type: CreateBucketTask) {
+    bucketName "${S3BucketNameA}"
+    region "${Region}"
+    ifNotExists true
+}
+```
+
+The `CreateBucketTask` is provided by the Gradle plugin 
+[jp.classmethod.aws](https://plugins.gradle.org/plugin/jp.classmethod.aws).
+
+<a name="subprojectB" id="subprojectB"></a>
+### subprojectB: create a S3 Bucket using CloudFormation via plugin
+
+In the commandline with bash, I can try this:
+
+```
+$ cd $NeoGOF
+$ ./gradlew :subprojectB:awsCfnMigrateStack
+```
+
+Then I got a new S3 Bucket is successfully created in my AWS Account.
+
+In the [subprojectA/build.gradle](./subprojectA/build.gradle) file,
+I have the following task defintion:
+
+```
+cloudFormation {
+    stackName 'StackB'
+    stackParams([
+            S3BucketName: "${S3BucketNameB}"
+    ])
+    capabilityIam true
+    templateFile project.file("src/cloudformation/B-template.yml")
+}
+// awsCfnMigrateStack task is provided by the gradle-aws-plugin
+// awsCfnDeleteStack  task is provided by the gradle-aws-plugin
+```
+
+The `awsCfnMigrateStack` task is a dedicated task provided by
+the Gradle plugin 
+[jp.classmethod.aws](https://plugins.gradle.org/plugin/jp.classmethod.aws)
+to activate AWS CloudFormation.
+
+The [`src/cloudformation/B-template.yml`](./subprojectB/src/cloudformation/B-template.yml)
+is the Template for CloudFormation Stack. It contains such code fragment:
+
+```
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${S3BucketName}
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+```
+
+This is a typical CloudFormation code that creates a S3 Bucket.
+
+<a name="subprojectC" id="subprojectC"></a>
+### subprojectC: failed to create a IAM Role using CloudFormation via plugin
+
+In the commandline with bash, I can try this:
+
+```
+$ cd $NeoGOF
+$ ./gradlew :subprojectC:awsCfnMigrateStack
+```
+
+When I tried it, it failed.
+
+```
+stack subprojectC not found
+
+> Task :subprojectC:awsCfnMigrateStack FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':subprojectC:awsCfnMigrateStack'.
+> Requires capabilities : [CAPABILITY_NAMED_IAM] (Service: AmazonCloudFormation; Status Code: 400; Error Code: InsufficientCapabilitiesException; Request ID: c1abb0f1-29c9-4679-9ca1-ccb862ff83f0)
+```
+
+The `subprojectC/build.gradle` script contains a similar code fragment 
+as `subprojectBA/build.gradle`. 
+```
+cloudformation {
+    ...
+}
+```
+But it reads another CloudFormation Template YAML 
+[`subprojectC/src/cloudformation/C-template.yml`](./subprojectC/src/cloudformation/C-template.yml).
+
+The `C-template.yml` file contains new portion:
+
+```
+Resources:
+
+  NeoGofRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: ./src/iam/assume-role-policy-document.json
+      RoleName: NeoGofRoleC
+```
+
+This portion lets CloudFormation to provision a IAM Role named `NameGofRoleC`.
+
+<a name="InsufficientCapabilitiesException" id="InsufficientCapabilitiesException"></a>
+#### Root cause of failure
+
+Why `$ ./gradlew :subprojectC:awsCfnMigrateStack` failed with message 
+`Error Code: InsufficientCapabilitiesException`?
+
+The root cause is already known by the plugin developers. See the following
+issue in the Project's Issue list.
+
+- [Support for CAPABILITY_NAMED_IAM](https://github.com/classmethod/gradle-aws-plugin/issues/50)
+
+You can see this issue was opened 4 years ago, July 2016,
+and is still outstanding in 2020.
+
+The plugin was initially develepedn in 2016 and after later in 2017 
+`CAPABILITY_NAMED_IAM` was added. Obvisously, the plugin is 
+outdated. It failed to keep in pace with rapid and continuous
+development of AWS services.
 
 
 <a name="conclusion" id="conclusion"></a>
@@ -334,11 +490,10 @@ Users can safely rely on the CLI and CF.
 Therefore a Gradle `build.gradle` which executes indirectly CloudFormation 
 via Shell+CLI is assured that it can utilize full features of AWS services
 together with Gradle's built-in features such as building a AWS Lambda 
-Function in Java. 
+Function in Java. And it will remain easy to maintain in future.
 
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
-is a powerful toolset. It will remain easy to maintain in future.
-
+is a powerful toolset to achieve Continuous Delivery.
 
 
 

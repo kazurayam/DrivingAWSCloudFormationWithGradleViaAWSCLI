@@ -36,7 +36,7 @@ aws {
 }
 
 cloudFormation {
-    stackName 'subprojectB'
+    stackName 'subprojectC'
     stackParams([
             S3BucketName: "${S3BucketNameC}"
     ])
