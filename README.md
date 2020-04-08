@@ -483,7 +483,7 @@ miyamoto-daisuke who has already
  Everyone can contribute to add useful features to this plugin. I appreciate your pull-requests.
 
 
-So, the plugin failed to keep in pace with rapid and continuous
+So, the plugin failed to keep in pace with the rapid and continuous
 development of AWS services. 
 
 
@@ -493,9 +493,8 @@ development of AWS services.
 I want to express my appreciations and respects to the developers of
 the Gradle AWS Plugin 
 [jp.classmethod.aws](https://github.com/classmethod/gradle-aws-plugin).
-However I would note that small Gradle plugin projects 
-for managing AWS resources may fail keeping pace with 
-the rapid and continuous development of AWS services.
+However the plugin is already outdated and probally will not be
+maintained any longer.
 
 On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
 products which AWS is committed to continue full support. 
