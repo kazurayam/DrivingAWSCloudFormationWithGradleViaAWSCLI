@@ -498,13 +498,14 @@ for managing AWS resources may fail keeping pace with
 the rapid and continuous development of AWS services.
 
 On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
-products which AWS fully supports to make their services available to users.
-Users can safely rely on the CLI and CF.
+products which AWS is committed to continue full support. 
 
-Therefore a Gradle `build.gradle` which executes indirectly CloudFormation 
-via Shell+CLI is assured that it can utilize full features of AWS services
+Therefore I can assure you that 
+a Gradle `build.gradle` which executes indirectly CloudFormation 
+via Shell+CLI can utilize in long term 
+full features of AWS services
 together with Gradle's built-in features such as building a AWS Lambda 
-Function in Java. And it will remain easy to maintain in future.
+Function in Java. The code will be simple and easy to maintain.
 
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
 is a powerful toolset to achieve Continuous Delivery.
