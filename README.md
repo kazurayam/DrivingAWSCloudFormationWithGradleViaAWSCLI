@@ -451,7 +451,7 @@ Resources:
       RoleName: NeoGofRoleC
 ```
 
-This portion lets CloudFormation to provision a IAM Role named `NameGofRoleC`.
+This portion requires CloudFormation to provision a IAM Role named `NameGofRoleC`.
 
 <a name="InsufficientCapabilitiesException" id="InsufficientCapabilitiesException"></a>
 #### Root cause of failure
@@ -465,12 +465,26 @@ issue in the Project's Issue list.
 - [Support for CAPABILITY_NAMED_IAM](https://github.com/classmethod/gradle-aws-plugin/issues/50)
 
 You can see this issue was opened 4 years ago, July 2016,
-and is still outstanding in 2020.
+and is still outstanding in April 2020.
 
-The plugin was initially develepedn in 2016 and after later in 2017 
-`CAPABILITY_NAMED_IAM` was added. Obvisously, the plugin is 
-outdated. It failed to keep in pace with rapid and continuous
-development of AWS services.
+The plugin was initially developed in 2016. Later in 2017 
+`CAPABILITY_NAMED_IAM` was added in AWS CloudFormation spec.
+Obvisously, the plugin has not been maintained and is now outdated. 
+
+The originator of 
+[jp.classmethod.aws](https://plugins.gradle.org/plugin/jp.classmethod.aws),
+miyamoto-daisuke who as unfortunately already 
+[passed away](https://github.com/classmethod/gradle-aws-plugin/issues/188),
+ commented in a open issue
+[RDSInstance Support](https://github.com/classmethod/gradle-aws-plugin/issues/2)
+
+
+>It is hard for me alone to implement all AWS product's feature. So I start to implement the features which I need now. I think that this plugin should have all of useful feature to call AWS API.
+ Everyone can contribute to add useful features to this plugin. I appreciate your pull-requests.
+
+
+So, the plugin failed to keep in pace with rapid and continuous
+development of AWS services. 
 
 
 <a name="conclusion" id="conclusion"></a>
