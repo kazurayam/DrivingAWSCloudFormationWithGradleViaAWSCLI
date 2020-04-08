@@ -476,7 +476,7 @@ The originator of
 miyamoto-daisuke who has already 
 [passed away](https://github.com/classmethod/gradle-aws-plugin/issues/188) unfortunately,
  commented in a open issue
-[RDSInstance Support](https://github.com/classmethod/gradle-aws-plugin/issues/2)
+[RDS Instance Support](https://github.com/classmethod/gradle-aws-plugin/issues/2)
 
 
 >It is hard for me alone to implement all AWS product's feature. So I start to implement the features which I need now. I think that this plugin should have all of useful feature to call AWS API.
@@ -503,8 +503,8 @@ Therefore I can assure you that
 a Gradle `build.gradle` which executes indirectly CloudFormation 
 via Shell+CLI can utilize in long term 
 full features of AWS services
-together with Gradle's built-in features such as building a AWS Lambda 
-Function in Java. The code will be simple and easy to maintain.
+together with Gradle's built-in tasks such as building a AWS Lambda 
+Function in Java. The codeset will be simple and easy to maintain.
 
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
 is a powerful toolset to achieve Continuous Delivery.
