@@ -542,26 +542,18 @@ development of AWS services.
 I want to express my appreciations and respects to the developers of
 the Gradle AWS Plugin 
 [jp.classmethod.aws](https://github.com/classmethod/gradle-aws-plugin).
-However the plugin is already outdated and probally will not be
-maintained any longer.
+However the plugin is already outdated and probably will not be
+maintained any longer as [the maintainer passed away](https://github.com/classmethod/gradle-aws-plugin/issues/188).
 
-On the contrary, AWS CLI and AWS CloudFormation --- these are the primary
-products which AWS is committed to continue full support. 
-
-Therefore I can assure you that 
-a Gradle `build.gradle` which executes indirectly CloudFormation 
-via Shell+CLI can utilize in long term 
-full features of AWS services
-together with Gradle's built-in tasks such as building a AWS Lambda 
-Function in Java. The codeset will be simple and easy to maintain.
-
+On the other hand, AWS CLI and AWS CloudFormation --- these are the AWS 
+primary products. 
+Therefore I can assure you that a Gradle `build.gradle` can execute 
+CloudFormation via Shell+CLI in long term to go. You can
+invoke everything needed to deploy your Lambda function in Java 
+into your production environment by one stroke of command.
 The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo GOF) 
 is a powerful toolset to achieve Continuous Delivery.
 
-
-
-
-
-
-
+The Shell scripts and `build.gradle` scripts I presented here --- 
+all of them are simple. Customizing them will be a breeze.
  
