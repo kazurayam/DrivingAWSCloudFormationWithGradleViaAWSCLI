@@ -1,0 +1,124 @@
+include::../attribute.adoc[]
+
+
+== Overview
+
+Build and Delivery by the toolset of
+*Gradle + Shell + AWS CLI + CloudFormation* (new Gang of Four)
+makes life easy for Java/Groovy/Kotlin developers.
+
+image::overview.png[]
+
+=== Problem to solve
+
+1. I want to use *https://gradle.org/[Gradle] Build Tool* to achieve
+https://martinfowler.com/bliki/ContinuousDelivery.html[Continuous Delivery].
+By one command `$ gradle deploy`, I want to achieve all tasks for developing applications
+in Java/Kotlin language which should run as
+https://aws.amazon.com/lambda/[AWS Lambda] Functions.
+2. I want to use Gradle to do compiling, testing and archiving my Java applications as usual.
+3. I want to automate provisioning a https://aws.amazon.com/s3/[AWS S3] Bucket where I locate the jar file containing
+my Lambda functions.
+4. I want to automate uploading the jar file up to the designated S3 Bucket every after I modify the application source and rebuild it.
+5. I want to automate provisioning other various AWS resources:
+AWS Lambda Functions, CloudWatch Event Rules, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html[IAM Roles], Simple Queue Service,
+Simple Notification Service, etc. In order to accomplish these complex tasks,
+I want to use AWS Provisioning Tool https://aws.amazon.com/jp/cloudformation/[CloudFormation].
+
+A question came up to me. _How to make full use of AWS CloudFormation functionalities in a Gradle `build.gradle` script?_
+
+=== Solutions
+
+I found 2 possible approaches.
+
+1. use combination of Gradle + Shell + AWS CLI + CloudFormation. The `build.gradle` scripts calls built-in `Exec` task which executes an external shell link:../awscli-cooked.sh[`awscli-cooked.sh`] which executes https://aws.amazon.com/cli/[AWS CLI] to drive CloudFormation.
+2. use a Gradle AWS plugin https://github.com/classmethod/gradle-aws-plugin[jp.classmethod.aws]. This plugin adds a lot of custom Gradle tasks for managing various AWS resources including CloudFormation.
+
+I did research for a few days and got a conclusion that the Gang of Four toolset is better than a single Gradle plugin.
+
+I will explain how the Neo GOF toolset works first. Later I will also explain what I found about the plugin.
+
+=== Prerequisites
+
+- Java 8 or higher
+- Bash shell. On Windows, I installed
+https://gitforwindows.org/[Git for Windows] and got "Git Bash" bundled in it.
+- AWS Account for my use
+- IAM User with enough privileges.
+- https://aws.amazon.com/cli/[AWS CLI] installed and
+https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html[configured] on Mac or PC.
+The `default` profile in `~/.aws/config` file is configured to point my privileged IAM User.
+- I used Mac, though this project should work on Windows and Linux as well.
+
+=== Project directory structure
+
+The NeoGOF project is a Gradle Multi-project, which comprises with 5 sub-projects.
+
+....
+$NeoGOF
+├─app
+├─subprojectA
+├─subprojectB
+├─subprojectC
+└─subprojectD
+....
+
+On Commandline UI, I would `cd` to the rootProject, and execute `./gradlew` command.
+For example, the `hello` task of the rootProject will call each `hello` tasks defined
+each sub-projects.
+
+....
+$ cd $NeoGOF
+$ ./gradlew -q hello
+Hello, app
+Hello, subprojectA
+Hello, subprojectB
+Hello, subprojectB
+Hello, subprojectD
+Hello, rootProject
+....
+
+Or, you can execute a specific task of a subproject by typing
+`:<subPorjectName>:<taskName>`.
+For example;
+
+....
+$ cd $NeoGOF
+$ ./gradlew -q :subprojectA:hello
+Hello, subprojectA
+....
+
+=== Remarks
+
+You can download an zip archive of the project from the https://github.com/kazurayam/NeoGOF/releases[Releases] page. Provided that you have seasoned experience of using Gradle you should be able to play on this project. If you want to try yourself, you need to know a few stuff.
+
+==== S3 Bucket names need to be globally unique
+
+If you are going to try running this project on your PC, there is one thing you need to edit.
+
+In link:../gradle.properties[gradle.properties] file, you will find such line:
+
+....
+S3BucketNameA=bb4b24b08c-20200406-neogof-a
+....
+
+This line specifies the name of a AWS S3 Bucket to be provisioned. As you possibly are aware of, a S3 Bucket name must be globally unique. The example bucket name starting with `bb4b24b08c` is mine, not for your use. So you need to edit the `gradle.properties` file so that you give alternative names for your own use. I would recommend you to replace the leading `bb4b24b08c` part
+with some other string.
+
+==== One-liner to generate your identity
+
+You want to generate your identity to make your S3 Bucket names globally unique. Ok, you can generate a mystified (possibly globally unique) 10 characters based on your AWS Account ID (12 digits) by the following shell command. Here I assume that you have AWS CLI installed:
+
+....
+$ aws sts get-caller-identity --query Account | md5sum | cut -c 1-10
+....
+
+==== *.sh files need to be executable
+
+Another thing you need to be aware. Once cloned out, it is likely that you need to change mode of *.sh files to make them executable. I mean, you may want to do:
+
+....
+$ cd $NeoGOF
+$ chmod +x ./awscli-cooked.sh
+$ chmod +x ./subprojectD/awscli-cooked.sh
+....

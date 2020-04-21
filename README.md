@@ -1,6 +1,11 @@
 Neo GOF
 =====
 
+- [HTML version](https://kazurayam.github.io/NeoGOF/index.html)
+- [PDF version](https://kazurayam.github.io/NeoGOF/index.pdf)
+
+
+
 Author: kazurayam, japan
 
 Date: 7th April 2020
@@ -177,6 +182,14 @@ $ cd $NeoGOF
 $ chmod +x ./awscli-cooked.sh
 $ chmod +x ./subprojectD/awscli-cooked.sh
 ```
+
+
+
+
+
+
+
+
 
 <a name="NeoGOF" id="NeoGOF"></a>
 ## Description1: Neo GOF toolset

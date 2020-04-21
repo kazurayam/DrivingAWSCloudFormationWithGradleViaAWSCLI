@@ -1,0 +1,14 @@
+include::../attribute.adoc[]
+
+
+
+## Conclusion
+
+I want to express my appreciations and respects to the developers of the Gradle AWS Plugin
+https://github.com/classmethod/gradle-aws-plugin[jp.classmethod.aws]. However the plugin is already outdated and probably will not be maintained any longer as https://github.com/classmethod/gradle-aws-plugin/issues/188[the maintainer passed away].
+
+On the other hand, we have *AWS CLI* and *CloudFormation*; these are the AWS primary products. I can assure you that a *Gradle* `build.gradle` can execute CloudFormation via *Shell script calling AWS CLI* in long term to go. You can invoke everything needed to deploy your *Lambda function in Java* into your production environment by one stroke of command. The combination of Gradle + Shell + AWS CLI + CloudFormation (Neo Gang of Four) is a powerful toolset to achieve Continuous Delivery.
+
+Here I presented a few Shell scripts and `build.gradle` scripts. All of them are simple. Customizing them will be a breeze.
+
+end
