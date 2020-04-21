@@ -64,7 +64,7 @@ task cleanDocs(type: Delete) {
     }
 }
 
-task docs(dependsOn: [asciidoctor, asciidoctorPdf, cleanDocs]) doLast {
+task docs(dependsOn: [clean, cleanDocs, asciidoctor, asciidoctorPdf]) doLast {
     copy {
         from 'build/docs/asciidoc/index.html'
         from 'build/docs/asciidocPdf/index.pdf'
@@ -76,6 +76,10 @@ task docs(dependsOn: [asciidoctor, asciidoctorPdf, cleanDocs]) doLast {
         into 'docs'
     }
 }
+cleanDocs.mustRunAfter(clean)
+asciidoctor.mustRunAfter(cleanDocs)
+asciidoctorPdf.mustRunAfter(asciidoctor)
+
 
 defaultTasks 'docs'
 

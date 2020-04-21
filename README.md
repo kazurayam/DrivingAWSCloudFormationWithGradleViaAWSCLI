@@ -1,4 +1,4 @@
-Neo GOF
+Neo GOF: Continuous delivery using Gradle + Shell + AWS CLI + CloudFormation 
 =====
 
 Build and Delivery by the toolset of
