@@ -1,6 +1,6 @@
 include::./attribute.adoc[]
 
-= Neo GOF
+= Neo GOF: Gradle + Shell + AWS CLI + CloudFormation
 https://github.com/kazurayam/NeoGOF
 2020-04-07
 :Revision: 0.1.0
