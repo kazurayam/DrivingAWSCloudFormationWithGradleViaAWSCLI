@@ -11,15 +11,16 @@ image::overview.png[]
 
 === Problem to solve
 
-1. I want to use *https://gradle.org/[Gradle] Build Tool* to achieve
+1. I have a few One Man projects. I want to develop Applications in Java/Kotlin. And I want to provision AWS resources for them myself. No division of labour there.
+2. I want to use *https://gradle.org/[Gradle] Build Tool* to achieve
 https://martinfowler.com/bliki/ContinuousDelivery.html[Continuous Delivery].
 By one command `$ gradle deploy`, I want to achieve all tasks for developing applications
 in Java/Kotlin language which should run as
 https://aws.amazon.com/lambda/[AWS Lambda] Functions.
-2. I want to use Gradle to do compiling, testing and archiving my Java applications as usual.
-3. I want to automate provisioning a https://aws.amazon.com/s3/[AWS S3] Bucket where I locate the jar file containing
+3. I want to use Gradle to do compiling, testing and archiving my Java applications as usual.
+4. I want to automate provisioning a https://aws.amazon.com/s3/[AWS S3] Bucket where I locate the jar file containing
 my Lambda functions.
-4. I want to automate uploading the jar file up to the designated S3 Bucket every after I modify the application source and rebuild it.
+5. I want to automate uploading the jar file up to the designated S3 Bucket every after I modify the application source and rebuild it.
 5. I want to automate provisioning other various AWS resources:
 AWS Lambda Functions, CloudWatch Event Rules, https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html[IAM Roles], Simple Queue Service,
 Simple Notification Service, etc. In order to accomplish these complex tasks,
